@@ -43,7 +43,7 @@
 
             try {
                 // 네트리파이 함수 호출 시 사용자가 입력한 프롬프트를 전달
-                const response = await fetch(`/.netlify/functions/post_thread?extra=${encodeURIComponent(customPrompt)}`);
+                const response = await fetch('/post_thread?extra=${encodeURIComponent(customPrompt)}`);
                 const result = await response.json();
                 
                 alert(result.message);
@@ -58,4 +58,5 @@
         }
     </script>
 </body>
+
 </html>
