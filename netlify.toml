@@ -1,8 +1,12 @@
 [build]
-  functions = "."  # 현재 폴더 전체를 뒤져라! 라는 뜻입니다.
+  command = "python -m pip install -r requirements.txt"
+  publish = "."
+  functions = "."
 
 [functions]
   node_bundler = "esbuild"
 
-[context.production]
-  environment = { PYTHON_VERSION = "3.9" }
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
