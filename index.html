@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Threads Marketing App</title>
+    <style>
+        body { padding: 20px; background-color: #0f1419; color: white; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        .app-container { max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+        h2 { font-size: 1.5rem; margin-bottom: 5px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        p { color: #8899a6; font-size: 0.9rem; }
+        label { font-weight: bold; font-size: 1rem; color: #fff; }
+        textarea { width: 100%; height: 150px; padding: 15px; border-radius: 15px; border: 1px solid #333; background: #1d2125; color: white; font-size: 1rem; box-sizing: border-box; resize: none; }
+        textarea:focus { border-color: #1d9bf0; outline: none; }
+        .post-btn { padding: 18px; font-size: 1.1rem; font-weight: bold; border: none; border-radius: 50px; background-color: #fff; color: #000; cursor: pointer; transition: transform 0.1s; }
+        .post-btn:active { transform: scale(0.98); background-color: #e6e6e6; }
+        .post-btn:disabled { background-color: #555; color: #888; }
+        .status { font-size: 0.9rem; text-align: center; color: #1d9bf0; min-height: 20px; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <h2>Threads 마케팅 매니저</h2>
+        <p>오늘의 컨셉이나 추가 지시사항을 입력하세요.</p>
+        
+        <label>실시간 프롬프트 수정</label>
+        <textarea id="userPrompt" placeholder="예: 말투를 조금 더 부드럽게 해줘 / 20대 여성이 쓴 것처럼 작성해줘"></textarea>
+        
+        <div id="statusMsg" class="status"></div>
+        <button class="post-btn" onclick="runPost()">🚀 스레드 게시하기</button>
+    </div>
+
+    <script>
+        async function runPost() {
+            const btn = document.querySelector('.post-btn');
+            const statusMsg = document.getElementById('statusMsg');
+            const customPrompt = document.getElementById('userPrompt').value;
+            
+            if(!confirm("설정한 내용으로 게시물을 생성할까요?")) return;
+
+            btn.disabled = true;
+            statusMsg.innerText = "클로드가 글을 작성하고 업로드 중...";
+
+            try {
+                // 네트리파이 함수 호출 시 사용자가 입력한 프롬프트를 전달
+                const response = await fetch(`/.netlify/functions/post_thread?extra=${encodeURIComponent(customPrompt)}`);
+                const result = await response.json();
+                
+                alert(result.message);
+                statusMsg.innerText = "게시 완료!";
+            } catch (error) {
+                alert("연결 중 오류가 발생했습니다.");
+                statusMsg.innerText = "오류 발생";
+            } finally {
+                btn.disabled = false;
+                setTimeout(() => { statusMsg.innerText = ""; }, 3000);
+            }
+        }
+    </script>
+</body>
+</html>

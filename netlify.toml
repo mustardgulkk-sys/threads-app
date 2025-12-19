@@ -1,0 +1,8 @@
+[build]
+  functions = "."  # 현재 폴더 전체를 뒤져라! 라는 뜻입니다.
+
+[functions]
+  node_bundler = "esbuild"
+
+[context.production]
+  environment = { PYTHON_VERSION = "3.9" }
