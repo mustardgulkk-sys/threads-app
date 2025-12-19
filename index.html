@@ -42,15 +42,22 @@
             statusMsg.innerText = "클로드가 글을 작성하고 업로드 중...";
 
             try {
-                // 네트리파이 함수 호출 시 사용자가 입력한 프롬프트를 전달
-                const response = await fetch('/post_thread?extra=${encodeURIComponent(customPrompt)}`);
+                // 수정한 부분: 빽틱(`) 기호를 사용하고 주소를 더 명확하게 변경했습니다.
+                const url = `/post_thread?extra=${encodeURIComponent(customPrompt)}`;
+                const response = await fetch(url);
                 const result = await response.json();
                 
-                alert(result.message);
-                statusMsg.innerText = "게시 완료!";
+                if (response.ok) {
+                    alert(result.message || "✅ 게시 성공!");
+                    statusMsg.innerText = "게시 완료!";
+                } else {
+                    alert("❌ 실패: " + (result.error || "알 수 없는 오류"));
+                    statusMsg.innerText = "오류 발생";
+                }
             } catch (error) {
+                console.error(error);
                 alert("연결 중 오류가 발생했습니다.");
-                statusMsg.innerText = "오류 발생";
+                statusMsg.innerText = "네트워크 오류";
             } finally {
                 btn.disabled = false;
                 setTimeout(() => { statusMsg.innerText = ""; }, 3000);
@@ -58,6 +65,4 @@
         }
     </script>
 </body>
-
 </html>
-
